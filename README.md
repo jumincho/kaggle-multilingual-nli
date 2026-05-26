@@ -12,8 +12,6 @@
   <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
 </a>
 
-> 저장소 이름 관련 제안: 현재 이름은 Kaggle 대회명을 그대로 따른 것이므로 그대로 두어도 무방합니다. 다만 더 직관적인 이름을 원한다면 `multilingual-nli-kaggle` 정도가 후보가 될 수 있습니다.
-
 ## 접근 방법
 
 - **모델**: [`symanto/xlm-roberta-base-snli-mnli-anli-xnli`](https://huggingface.co/symanto/xlm-roberta-base-snli-mnli-anli-xnli)
