@@ -1,13 +1,14 @@
-torch
-tensorflow
+# transformers / datasets API 변경 영향을 받기 때문에 버전 범위 고정.
+# AdamW, load_metric, evaluation_strategy 가 모두 deprecated/제거된 이력 있음.
+torch>=2.0
+transformers>=4.36,<4.46
+datasets>=2.14,<3.0
+evaluate>=0.4
+accelerate>=0.25
 numpy
 pandas
+scikit-learn
 matplotlib
 plotly
 seaborn
-scikit-learn
-datasets
-evaluate
-transformers
-accelerate
 wandb

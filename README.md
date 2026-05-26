@@ -19,7 +19,7 @@
 - **커스텀 헤드**: 768 → 512 (LayerNorm + ReLU + Dropout) → 3-class 분류기
 - **전처리**: `premise`, `hypothesis` 쌍을 하나의 시퀀스로 토큰화 (`truncation=True`).
   학습 데이터는 75 / 25 비율로 train / validation 분할
-- **학습**: Hugging Face `Trainer`, `AdamW`, 5 epoch, `evaluation_strategy="epoch"`
+- **학습**: Hugging Face `Trainer`, `AdamW` (`optim="adamw_torch"`), 5 epoch, `eval_strategy="epoch"`
 - **평가 지표**: accuracy, F1 (`evaluate` 라이브러리)
 
 ## 결과
@@ -39,7 +39,7 @@
 ## 기술 스택
 
 - **언어**: Python 3
-- **딥러닝**: PyTorch, TensorFlow (GPU 환경 설정용)
+- **딥러닝**: PyTorch
 - **NLP**: Hugging Face `transformers`, `datasets`, `evaluate`, `accelerate`
 - **데이터**: pandas, scikit-learn (`train_test_split`)
 - **시각화**: matplotlib, seaborn, plotly
