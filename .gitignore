@@ -2,3 +2,13 @@
 __pycache__/
 *.pyc
 .DS_Store
+
+# Training artifacts
+outputs/
+logs/
+wandb/
+*.log
+
+# Generated submissions
+submission.csv
+submission_*.csv
