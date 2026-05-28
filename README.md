@@ -5,13 +5,13 @@
 **다국어 자연어 추론 (NLI) — Kaggle "Contradictory, My Dear Watson" 솔루션**
 **Multilingual NLI — Kaggle "Contradictory, My Dear Watson" solution**
 
-![Language](https://img.shields.io/badge/language-Python%203-3776AB?logo=python&logoColor=white)
+![Language](https://img.shields.io/badge/language-Python%203.10-3776AB?logo=python&logoColor=white)
 ![Framework](https://img.shields.io/badge/framework-PyTorch%20%2B%20Transformers-EE4C2C?logo=pytorch&logoColor=white)
 ![Model](https://img.shields.io/badge/model-XLM--RoBERTa-FFD43B?logo=huggingface&logoColor=black)
 ![Val Acc](https://img.shields.io/badge/val%20acc-0.833-green)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
-**한국어** · [English](#english)
+**한국어** · [English](#english) · [中文](./README.zh-CN.md)
 
 </div>
 
@@ -21,11 +21,11 @@
 
 > 다국어 자연어 추론(NLI) — Kaggle 경진대회 솔루션
 
-15개 언어로 된 전제(premise)와 가설(hypothesis) 문장 쌍을
-**수반(entailment) / 중립(neutral) / 모순(contradiction)** 세 가지로 분류하는
+15개 언어의 전제(premise)와 가설(hypothesis) 문장 쌍을
+**수반(entailment) / 중립(neutral) / 모순(contradiction)** 세 클래스로 분류하는
 [Kaggle 경진대회](https://www.kaggle.com/competitions/contradictory-my-dear-watson)
-참가 솔루션입니다. 영어뿐 아니라 아랍어, 중국어, 힌디어, 스와힐리어 등
-다양한 언어가 섞여 있어 다국어 사전학습 모델이 필수입니다.
+솔루션입니다. 영어뿐 아니라 아랍어·중국어·힌디어·스와힖리어 등이 섞여 있어
+다국어 사전학습 백본이 필요합니다.
 
 <a target="_blank" href="https://colab.research.google.com/github/jumincho/kaggle-multilingual-nli/blob/main/notebooks/contradictory_my_dear_watson.ipynb">
   <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
@@ -33,48 +33,53 @@
 
 ## 접근 방법
 
-- **모델**: [`symanto/xlm-roberta-base-snli-mnli-anli-xnli`](https://huggingface.co/symanto/xlm-roberta-base-snli-mnli-anli-xnli)
-  — SNLI / MNLI / ANLI / XNLI 로 사전 파인튜닝된 XLM-RoBERTa 기반 모델을 백본으로 사용
-- **커스텀 헤드**: 768 → 512 (LayerNorm + ReLU + Dropout) → 3-class 분류기
-- **전처리**: `premise`, `hypothesis` 쌍을 하나의 시퀀스로 토큰화 (`truncation=True`).
-  학습 데이터는 75 / 25 비율로 train / validation 분할
-- **학습**: Hugging Face `Trainer`, `AdamW` (`optim="adamw_torch"`), 5 epoch, `eval_strategy="epoch"`
-- **평가 지표**: accuracy, F1 (`evaluate` 라이브러리)
+- **백본**: [`symanto/xlm-roberta-base-snli-mnli-anli-xnli`](https://huggingface.co/symanto/xlm-roberta-base-snli-mnli-anli-xnli) — SNLI/MNLI/ANLI/XNLI에서 사전 파인튜닝된 XLM-RoBERTa
+- **분류 헤드**: `[CLS]` 풀링 → Dropout → Linear(768→512) → LayerNorm → ReLU → Dropout → Linear(512→3)
+- **전처리**: `premise` + `hypothesis`를 한 시퀀스로 페어 토큰화 (`truncation=True`). 학습 데이터는 75/25 비율로 train/validation 분할
+- **학습**: Hugging Face `Trainer`, `AdamW` (`optim="adamw_torch"`), 5 epoch, epoch 단위 평가
+- **평가 지표**: accuracy, micro-F1 (`evaluate` 라이브러리)
 
 ## 결과
 
 5 에폭 학습 후 validation 기준:
 
-| Epoch | Training Loss | Validation Loss | Accuracy |  F1   |
-| :---: | :-----------: | :-------------: | :------: | :---: |
-|   1   |    0.6683     |     0.5721      |  0.7693  | 0.769 |
-|   2   |    0.4966     |     0.7378      |  0.7868  | 0.787 |
-|   3   |    0.3754     |     0.8749      |  0.8152  | 0.815 |
-|   4   |    0.2022     |     0.9899      |  0.8264  | 0.826 |
-|   5   |    0.1202     |     1.1052      |  0.8327  | 0.833 |
+| Epoch | Train Loss | Val Loss | Accuracy |  F1   |
+| :---: | :--------: | :------: | :------: | :---: |
+|   1   |   0.6683   |  0.5721  |  0.7693  | 0.769 |
+|   2   |   0.4966   |  0.7378  |  0.7868  | 0.787 |
+|   3   |   0.3754   |  0.8749  |  0.8152  | 0.815 |
+|   4   |   0.2022   |  0.9899  |  0.8264  | 0.826 |
+|   5   |   0.1202   |  1.1052  |  0.8327  | 0.833 |
 
-최종 validation accuracy **0.8327**, F1 **0.833**.
+최종 validation **accuracy 0.8327**, **F1 0.833**.
 
 ## 기술 스택
 
-- **언어**: Python 3
-- **딥러닝**: PyTorch
-- **NLP**: Hugging Face `transformers`, `datasets`, `evaluate`, `accelerate`
-- **데이터**: pandas, scikit-learn (`train_test_split`)
-- **시각화**: matplotlib, seaborn, plotly
-- **실험 관리**: Weights & Biases (선택)
+- **언어**: Python 3.10+
+- **딥러닝**: PyTorch ≥ 2.0
+- **NLP**: Hugging Face `transformers` (≥ 4.36, < 4.46) · `datasets` · `evaluate` · `accelerate`
+- **데이터**: `pandas`, `scikit-learn`
+- **시각화**: `matplotlib`, `seaborn`, `plotly`
+
+(버전 범위는 `requirements.txt` 참고 — `transformers`의 `AdamW` 제거, `eval_strategy` 인자명 변경 등 호환 이슈에 맞춰 고정했습니다.)
 
 ## 프로젝트 구조
 
 ```
 kaggle-multilingual-nli/
+├── src/
+│   ├── __init__.py
+│   ├── data.py            # CSV 로드, train/val 분할, 토큰화
+│   ├── model.py           # XLMRobertaNLIClassifier + HeadConfig
+│   └── train.py           # 학습+예측 파이프라인 (노트북·CLI 공용)
 ├── notebooks/
-│   └── contradictory_my_dear_watson.ipynb   # 전체 파이프라인 (전처리 → 학습 → 제출)
+│   └── contradictory_my_dear_watson.ipynb   # src/ 모듈을 사용하는 진입 노트북
 ├── data/
-│   ├── train.csv                            # 학습 데이터 (premise, hypothesis, label, language)
-│   ├── test.csv                             # 평가 데이터
-│   └── sample_submission.csv                # 제출 양식
+│   ├── train.csv          # id, premise, hypothesis, lang_abv, language, label
+│   ├── test.csv           # id, premise, hypothesis, lang_abv, language
+│   └── sample_submission.csv
 ├── requirements.txt
+├── .gitignore
 └── README.md
 ```
 
@@ -82,10 +87,9 @@ kaggle-multilingual-nli/
 
 ### Google Colab
 
-상단의 "Open In Colab" 배지로 GPU 환경에서 바로 실행할 수 있습니다.
-노트북 내 데이터 경로는 `../data/*.csv` 로 설정되어 있어, Colab에서는
-`data/` 디렉터리를 통째로 업로드하거나 저장소를 clone 한 뒤 `notebooks/`
-디렉터리로 이동해서 실행하는 방식이 작동합니다.
+상단의 **Open In Colab** 배지로 GPU 환경에서 바로 실행합니다. 노트북은
+저장소의 `src/` 모듈을 임포트하므로, Colab에서는 저장소를 clone한 뒤
+`notebooks/` 안의 파일을 여는 방식을 권장합니다.
 
 ### 로컬
 
@@ -93,16 +97,15 @@ kaggle-multilingual-nli/
 git clone https://github.com/jumincho/kaggle-multilingual-nli.git
 cd kaggle-multilingual-nli
 pip install -r requirements.txt
-jupyter notebook notebooks/contradictory_my_dear_watson.ipynb
+
+# 노트북 진입
+jupyter lab notebooks/contradictory_my_dear_watson.ipynb
+
+# 또는 CLI 한 줄로 학습+예측+제출 파일 생성
+python -m src.train --epochs 5 --batch-size 16 --seed 42
 ```
 
-GPU(CUDA) 환경 권장. 학습 시간은 T4 기준 약 25분.
-
-## 스크린샷
-
-![004](https://github.com/jumincho/Contradictory-My-Dear-Watson/assets/77545063/e79d7714-4524-4840-9c42-4805504be058)
-![005](https://github.com/jumincho/Contradictory-My-Dear-Watson/assets/77545063/a38c572e-029e-407c-9861-b6844bf82e91)
-![006](https://github.com/jumincho/Contradictory-My-Dear-Watson/assets/77545063/d891de22-b999-4108-9628-f8743492e19b)
+GPU(CUDA) 권장. 학습 시간은 T4 기준 약 25분, 결과는 `submission.csv`로 저장됩니다.
 
 ## 라이선스
 
@@ -116,9 +119,10 @@ GPU(CUDA) 환경 권장. 학습 시간은 T4 기준 약 25분.
 
 > Multilingual NLI — solution for the Kaggle "Contradictory, My Dear Watson" competition.
 
-Classify premise-hypothesis pairs in 15 languages as
-**entailment / neutral / contradiction**. The data includes Arabic, Chinese, Hindi, Swahili,
-and other low-resource languages alongside English, so a multilingual pretrained backbone is required.
+Classify premise–hypothesis pairs in 15 languages as
+**entailment / neutral / contradiction**. The data mixes English with
+Arabic, Chinese, Hindi, Swahili and other low-resource languages, so a
+multilingual pretrained backbone is required.
 
 <a target="_blank" href="https://colab.research.google.com/github/jumincho/kaggle-multilingual-nli/blob/main/notebooks/contradictory_my_dear_watson.ipynb">
   <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
@@ -126,46 +130,53 @@ and other low-resource languages alongside English, so a multilingual pretrained
 
 ### Approach
 
-- **Model**: [`symanto/xlm-roberta-base-snli-mnli-anli-xnli`](https://huggingface.co/symanto/xlm-roberta-base-snli-mnli-anli-xnli) — XLM-RoBERTa pre-finetuned on SNLI / MNLI / ANLI / XNLI.
-- **Custom head**: 768 → 512 (LayerNorm + ReLU + Dropout) → 3-class classifier.
-- **Preprocessing**: tokenize the `premise` + `hypothesis` pair as a single sequence (`truncation=True`). Train set split 75/25 for train / validation.
-- **Training**: Hugging Face `Trainer`, `AdamW` (`optim="adamw_torch"`), 5 epochs, `eval_strategy="epoch"`.
-- **Metrics**: accuracy, F1 via the `evaluate` library.
+- **Backbone**: [`symanto/xlm-roberta-base-snli-mnli-anli-xnli`](https://huggingface.co/symanto/xlm-roberta-base-snli-mnli-anli-xnli) — XLM-RoBERTa pre-finetuned on SNLI/MNLI/ANLI/XNLI.
+- **Head**: `[CLS]` pooling → Dropout → Linear(768→512) → LayerNorm → ReLU → Dropout → Linear(512→3).
+- **Preprocessing**: pair-encode `premise` and `hypothesis` (`truncation=True`); 75/25 train/validation split.
+- **Training**: Hugging Face `Trainer`, `AdamW` (`optim="adamw_torch"`), 5 epochs, per-epoch evaluation.
+- **Metrics**: accuracy and micro-F1 via `evaluate`.
 
 ### Results
 
 After 5 epochs (validation):
 
-| Epoch | Training Loss | Validation Loss | Accuracy |  F1   |
-| :---: | :-----------: | :-------------: | :------: | :---: |
-|   1   |    0.6683     |     0.5721      |  0.7693  | 0.769 |
-|   2   |    0.4966     |     0.7378      |  0.7868  | 0.787 |
-|   3   |    0.3754     |     0.8749      |  0.8152  | 0.815 |
-|   4   |    0.2022     |     0.9899      |  0.8264  | 0.826 |
-|   5   |    0.1202     |     1.1052      |  0.8327  | 0.833 |
+| Epoch | Train Loss | Val Loss | Accuracy |  F1   |
+| :---: | :--------: | :------: | :------: | :---: |
+|   1   |   0.6683   |  0.5721  |  0.7693  | 0.769 |
+|   2   |   0.4966   |  0.7378  |  0.7868  | 0.787 |
+|   3   |   0.3754   |  0.8749  |  0.8152  | 0.815 |
+|   4   |   0.2022   |  0.9899  |  0.8264  | 0.826 |
+|   5   |   0.1202   |  1.1052  |  0.8327  | 0.833 |
 
-Final validation accuracy **0.8327**, F1 **0.833**.
+Final validation **accuracy 0.8327**, **F1 0.833**.
 
 ### Stack
 
-- **Language**: Python 3
-- **DL**: PyTorch
-- **NLP**: Hugging Face `transformers`, `datasets`, `evaluate`, `accelerate`
-- **Data**: pandas, scikit-learn (`train_test_split`)
-- **Viz**: matplotlib, seaborn, plotly
-- **Tracking**: Weights & Biases (optional)
+- **Language**: Python 3.10+
+- **DL**: PyTorch ≥ 2.0
+- **NLP**: Hugging Face `transformers` (≥ 4.36, < 4.46), `datasets`, `evaluate`, `accelerate`
+- **Data**: `pandas`, `scikit-learn`
+- **Viz**: `matplotlib`, `seaborn`, `plotly`
+
+(Pinned in `requirements.txt` against breaking changes — `AdamW` removal, `eval_strategy` rename, etc.)
 
 ### Layout
 
 ```
 kaggle-multilingual-nli/
+├── src/
+│   ├── __init__.py
+│   ├── data.py            # CSV load, train/val split, tokenization
+│   ├── model.py           # XLMRobertaNLIClassifier + HeadConfig
+│   └── train.py           # train + predict pipeline (notebook & CLI)
 ├── notebooks/
-│   └── contradictory_my_dear_watson.ipynb   # full pipeline (preprocess → train → submit)
+│   └── contradictory_my_dear_watson.ipynb   # thin entry over src/
 ├── data/
-│   ├── train.csv                            # train (premise, hypothesis, label, language)
-│   ├── test.csv                             # test
-│   └── sample_submission.csv                # submission format
+│   ├── train.csv          # id, premise, hypothesis, lang_abv, language, label
+│   ├── test.csv           # id, premise, hypothesis, lang_abv, language
+│   └── sample_submission.csv
 ├── requirements.txt
+├── .gitignore
 └── README.md
 ```
 
@@ -173,9 +184,9 @@ kaggle-multilingual-nli/
 
 #### Google Colab
 
-The "Open In Colab" badge above launches a GPU runtime. The notebook reads from
-`../data/*.csv`, so either upload the whole `data/` directory or clone the repo
-and run from inside `notebooks/`.
+Use the **Open In Colab** badge above. The notebook imports from `src/`, so
+the recommended Colab flow is `git clone` the repo and open the notebook
+from inside `notebooks/`.
 
 #### Local
 
@@ -183,10 +194,15 @@ and run from inside `notebooks/`.
 git clone https://github.com/jumincho/kaggle-multilingual-nli.git
 cd kaggle-multilingual-nli
 pip install -r requirements.txt
-jupyter notebook notebooks/contradictory_my_dear_watson.ipynb
+
+# Notebook entry
+jupyter lab notebooks/contradictory_my_dear_watson.ipynb
+
+# Or CLI: train + predict + write submission.csv
+python -m src.train --epochs 5 --batch-size 16 --seed 42
 ```
 
-GPU (CUDA) recommended. Training takes ~25 min on a T4.
+GPU (CUDA) recommended. ~25 minutes on a Colab T4. Output: `submission.csv`.
 
 ### License
 
