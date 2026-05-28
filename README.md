@@ -24,7 +24,7 @@
 15개 언어의 전제(premise)와 가설(hypothesis) 문장 쌍을
 **수반(entailment) / 중립(neutral) / 모순(contradiction)** 세 클래스로 분류하는
 [Kaggle 경진대회](https://www.kaggle.com/competitions/contradictory-my-dear-watson)
-솔루션입니다. 영어뿐 아니라 아랍어·중국어·힌디어·스와힖리어 등이 섞여 있어
+솔루션입니다. 영어뿐 아니라 아랍어·중국어·힌디어·스와힐리어 등이 섞여 있어
 다국어 사전학습 백본이 필요합니다.
 
 <a target="_blank" href="https://colab.research.google.com/github/jumincho/kaggle-multilingual-nli/blob/main/notebooks/contradictory_my_dear_watson.ipynb">
