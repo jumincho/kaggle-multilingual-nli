@@ -1,7 +1,9 @@
 # transformers / datasets API 변경 영향을 받기 때문에 버전 범위 고정.
-# AdamW, load_metric, evaluation_strategy 가 모두 deprecated/제거된 이력 있음.
+# train.py 는 `eval_strategy` 인자를 사용하는데, 이는 transformers 4.41 에서 도입되었다
+# (그 이전 이름은 `evaluation_strategy`). AdamW · load_metric 등도 deprecated/제거 이력이
+# 있어, 하한을 4.41 로 고정한다 (4.46 부터는 추가 변경이 있어 상한도 둔다).
 torch>=2.0
-transformers>=4.36,<4.46
+transformers>=4.41,<4.46
 datasets>=2.14,<3.0
 evaluate>=0.4
 accelerate>=0.25

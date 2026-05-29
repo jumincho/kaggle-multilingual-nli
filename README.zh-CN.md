@@ -5,6 +5,7 @@
 **多语言自然语言推理 (NLI) — Kaggle "Contradictory, My Dear Watson" 解决方案**
 
 ![Language](https://img.shields.io/badge/language-Python%203.10-3776AB?logo=python&logoColor=white)
+[![Verify](https://github.com/jumincho/kaggle-multilingual-nli/actions/workflows/verify.yml/badge.svg)](https://github.com/jumincho/kaggle-multilingual-nli/actions/workflows/verify.yml)
 ![Framework](https://img.shields.io/badge/framework-PyTorch%20%2B%20Transformers-EE4C2C?logo=pytorch&logoColor=white)
 ![Model](https://img.shields.io/badge/model-XLM--RoBERTa-FFD43B?logo=huggingface&logoColor=black)
 ![Val Acc](https://img.shields.io/badge/val%20acc-0.833-green)
@@ -56,7 +57,7 @@
 
 - **语言**: Python 3.10+
 - **深度学习**: PyTorch ≥ 2.0
-- **NLP**: Hugging Face `transformers` (≥ 4.36, < 4.46)、`datasets`、`evaluate`、`accelerate`
+- **NLP**: Hugging Face `transformers` (≥ 4.41, < 4.46)、`datasets`、`evaluate`、`accelerate`
 - **数据**: `pandas`、`scikit-learn`
 - **可视化**: `matplotlib`、`seaborn`、`plotly`
 
